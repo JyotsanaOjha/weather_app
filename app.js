@@ -17,7 +17,7 @@ app.get("/", function (req, res) {
 app.post("/", function (req, res) {
 
     let query = req.body.cityName;
-    const apiKey = "420ad60431071244dd15b6ceca54f7e1";
+    const apiKey = process.env.API_KEY;
     let unit = "metric";
 
     const url = "https://api.openweathermap.org/data/2.5/weather?q=" + query + "&appid=" + apiKey + "&units=" + unit
@@ -25,7 +25,7 @@ app.post("/", function (req, res) {
        console.log("Status Code: "+response.statusCode)
         //console.log('statusCode:', response.statusCode);
         // console.log("following is the response we got")
-        // console.log(response);
+        console.log("Status Message: "+response.statusMessage);
         // console.log('headers:', res.headers);
 
         response.on("data", function (d) {                  //tap into the response that we get back from the external server and call a method called "on", to search through the response for some data. This will correspond to the actual message body that we got back, that OpenWeatherMap has actually sent us. 
@@ -42,6 +42,7 @@ app.post("/", function (req, res) {
             let icon = weatherData.weather[0].icon;
             let imageURL = "http://openweathermap.org/img/wn/" + icon + "@2x.png";
 
+            // res.sendFile(__dirname + "/result.html?q=" + query);
 
             res.write("<h1>The temprature in " + query + " is " + temp + " degrees celcius.</h1>"); // there can be only one res.send(). So to send multiple lines as response, keep adding those lines to response using res.write() and at last use res.send(). 
             res.write("<h2>The weather is currently " + weatherDescription + " </h2>");
@@ -84,11 +85,10 @@ app.post("/", function (req, res) {
 
 
 
-app.listen(3000, function () {
+app.listen(process.env.PORT || 3000, function () {
 
     console.log("server is running on port 3000.")
 
 
 })
 
-// API key:  420ad60431071244dd15b6ceca54f7e1
